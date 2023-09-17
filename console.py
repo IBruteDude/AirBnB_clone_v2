@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -118,13 +118,53 @@ class HBNBCommand(cmd.Cmd):
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        args = str(args).split(' ')
+        cls, args = args[0], args[1:]
+        if cls not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        obj_dict = {}
+        for param in args:
+            eq = param.find('=')
+            if eq == -1:
+                continue
+            key, value = (param[:eq], param[eq + 1:])
+            if value[0] == '\"' and value[-1] == '\"':
+                obj_dict[key] = str(value[1:-1].replace('_', ' '))
+                continue
+            neg = False
+            if value[0] == '-':
+                neg = True
+                value = value[1:]
+            if value.count('.') == 1:
+                dot_split = value[:value.find('.')] + value[value.find('.') + 1:]
+                if all([c.isdigit() for c in dot_split]):
+                    obj_dict[key] = float(value)
+            elif all([c.isdigit() for c in value]):
+                obj_dict[key] = int(value)
+            if neg:
+                obj_dict[key] = -obj_dict[key]
+
+        new_instance = HBNBCommand.classes[cls](**obj_dict)
         print(new_instance.id)
         storage.save()
+
+    """
+    Command syntax: create <Class name> <param 1> <param 2> <param 3>...
+    Param syntax: <key name>=<value>
+    Value syntax:
+    String: "<value>" => starts with a double quote
+    any double quote inside the value must be escaped with a backslash \
+    all underscores _ must be replace by spaces . Example: You want to set the string My little house to the attribute name, your command line must be name="My_little_house"
+    Float: <unit>.<decimal> => contains a dot .
+    Integer: <number> => default case
+    If any parameter doesn’t fit with these requirements or can’t be recognized correctly by your program, it must be skipped
+    Don’t forget to add tests for this new feature!
+
+    Also, this new feature will be tested here only with FileStorage engine.
+    """
+
+
 
     def help_create(self):
         """ Help information for the create method """
@@ -272,7 +312,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -280,10 +320,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
