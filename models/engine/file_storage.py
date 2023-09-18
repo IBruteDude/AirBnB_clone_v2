@@ -14,9 +14,9 @@ class FileStorage:
             return FileStorage.__objects
         else:
             list = {}
-            for object in self.__objects:
-                if object.to_dict()['__class__'] == cls:
-                    list.update(object)
+            for key, value in self.__objects.items():
+                if value.__class__ == cls or value.__class__.__name__ == cls:
+                    list[key] = value
             return list
 
     def new(self, obj):
