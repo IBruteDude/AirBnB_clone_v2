@@ -31,14 +31,22 @@ class DBStorage:
             from models.amenity import Amenity
             from models.place import Place
             from models.review import Review
-            for cls in [User, State, City, Amenity, Place, Review]:
-                assert issubclass(cls, Base)
+            """"
+
+
+
+            REMEMBER THIS ONE TO UNCOMMENT PLEAAAAAAAAASE
+
+
+
+
+            """
+            for cls in [State, City]: #, User, Amenity, Place, Review]:
                 db_query = self.__session.query(cls).all()
                 for record in db_query:
                     queried_dict[f'{cls.__name__}.{record.id}'] = record
             return queried_dict
         else:
-            assert issubclass(cls, Base)
             db_query = self.__session.query(cls).all()
             for record in db_query:
                 queried_dict[f'{cls.__name__}.{record.id}'] = record
