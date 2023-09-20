@@ -6,11 +6,16 @@ from sqlalchemy.orm import relationship
 
 
 class Amenity(BaseModel, Base):
+    """ Amenity class """
     __tablename__ = 'amenities'
     name = Column(String(128), nullable=False)
     place_amenities = None
+
     def __init__(self, *args, **kwargs):
+        """encapsulate the Place module import in the __init__ method"""
         super().__init__(self, *args, **kwargs)
         from models.place import Place
         if Amenity.place_amenities is None:
-            Amenity.place_amenities = relationship('Place', secondary=Place.place_amenity)
+            Amenity.place_amenities = relationship(
+                'Place', secondary=Place.place_amenity
+            )

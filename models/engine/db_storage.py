@@ -1,4 +1,4 @@
-#/usr/bin/python3
+#!/usr/bin/python3
 """This module defines a class to manage database storage for hbnb clone"""
 from models.base_model import Base
 from os import getenv
@@ -6,18 +6,21 @@ from sqlalchemy import create_engine, Engine
 from sqlalchemy.orm import Session, sessionmaker, scoped_session
 from sqlalchemy.schema import MetaData
 
+
 class DBStorage:
     """This class manages storage of hbnb models in mysqldb format"""
     __engine = None
     __session = None
 
     def __init__(self):
-        DBStorage.__engine = create_engine("mysql+mysqldb://{}:{}@{}:3306/{}".format(
-            getenv("HBNB_MYSQL_USER"),
-            getenv("HBNB_MYSQL_PWD"),
-            getenv("HBNB_MYSQL_HOST"),
-            getenv("HBNB_MYSQL_DB"),
-        ), pool_pre_ping=True)
+        """Initialise the database storage engine according to env config"""
+        DBStorage.__engine = create_engine(
+            "mysql+mysqldb://{}:{}@{}:3306/{}".format(
+                getenv("HBNB_MYSQL_USER"),
+                getenv("HBNB_MYSQL_PWD"),
+                getenv("HBNB_MYSQL_HOST"),
+                getenv("HBNB_MYSQL_DB"),
+            ), pool_pre_ping=True)
         if getenv('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
@@ -43,16 +46,20 @@ class DBStorage:
             return queried_dict
 
     def new(self, obj):
+        """Adds a new record to storage database"""
         self.__session.add(obj)
 
     def save(self):
+        """Commit the storage session to the database"""
         self.__session.commit()
 
     def delete(self, obj=None):
+        """Delete the obj record from the database if found"""
         if obj is not None:
             self.__session.delete(obj)
 
     def reload(self):
+        """Loads storage data into a session from database"""
         from models.user import User
         from models.state import State
         from models.city import City

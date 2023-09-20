@@ -5,14 +5,13 @@ from datetime import datetime
 from sqlalchemy import Column
 from sqlalchemy.types import DateTime, String
 from sqlalchemy.ext.declarative import declarative_base
-
 Base = declarative_base()
+
 
 class BaseModel:
     id = Column(String(60), nullable=False, primary_key=True)
     created_at = Column(DateTime(), nullable=False)
     updated_at = Column(DateTime(), nullable=False)
-
 
     """A base class for all hbnb models"""
     def __init__(self, *args, **kwargs):
@@ -22,8 +21,8 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-        elif (kwargs.get('updated_at', None) is None or\
-              kwargs.get('created_at', None) is None or\
+        elif (kwargs.get('updated_at', None) is None or
+              kwargs.get('created_at', None) is None or
               kwargs.get('__class__', None) is None):
             from models import storage
             self.id = str(uuid.uuid4())

@@ -137,7 +137,8 @@ class HBNBCommand(cmd.Cmd):
                 neg = True
                 value = value[1:]
             if value.count('.') == 1:
-                dot_split = value[:value.find('.')] + value[value.find('.') + 1:]
+                dot_pos = value.find('.')
+                dot_split = value[:dot_pos] + value[dot_pos + 1:]
                 if all([c.isdigit() for c in dot_split]):
                     obj_dict[key] = float(value)
             elif all([c.isdigit() for c in value]):
@@ -343,6 +344,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

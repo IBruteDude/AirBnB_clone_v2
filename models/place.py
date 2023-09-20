@@ -6,6 +6,7 @@ from sqlalchemy import Table, Column, String, ForeignKey, Integer, Float
 from sqlalchemy.orm import relationship
 from os import getenv
 
+
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
@@ -20,9 +21,12 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     place_amenity = Table('place_amenity', Base.metadata,
-                          Column('place_id', String(60), ForeignKey('places.id'), primary_key=True,  nullable=False),
-                          Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True,  nullable=False)
-                    )
+                          Column('place_id',
+                                 String(60), ForeignKey('places.id'),
+                                 primary_key=True, nullable=False),
+                          Column('amenity_id',
+                                 String(60), ForeignKey('amenities.id'),
+                                 primary_key=True,  nullable=False))
     amenity_ids = []
     reviews = relationship("Review", backref='place', cascade='all, delete')
     if getenv('HBNB_TYPE_STORAGE') == 'db':
@@ -31,6 +35,7 @@ class Place(BaseModel, Base):
     else:
         @property
         def amenities(self):
+            """an amenities property for handling associated amenities"""
             from models.amenity import Amenity
             amenity_list = []
             for amenity in storage.all(Amenity).values():
@@ -38,6 +43,7 @@ class Place(BaseModel, Base):
                 if amenity.id in Place.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
+
         @amenities.setter
         def amenities(self, amenity):
             from models.amenity import Amenity
@@ -50,7 +56,7 @@ class Place(BaseModel, Base):
         from models.review import Review
         list = []
         all_reviews = storage.all(Review)
-        for review in  all_reviews.values():
+        for review in all_reviews.values():
             if review.place_id == self.id:
                 list.append(review)
         return list
