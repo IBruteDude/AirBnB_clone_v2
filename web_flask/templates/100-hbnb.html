@@ -11,13 +11,14 @@
 		<link rel="stylesheet"	href="../static/styles/3-footer.css">
 		<link rel="stylesheet"	href="../static/styles/6-filters.css">
 		<link rel="icon"		href="../static/images/icon.png">
+		<link rel="stylesheet"	href="../static/styles/8-places.css">
 	</head>
 	<body>
 		<header class="top_img">
 		</header>
 		<div class="container">
 			<section class="filters">
-                <div class="locations">
+				<div class="locations">
                     <h3>States</h3>
                     <h4>&nbsp;</h4>
                     <ul class="popover">
@@ -44,7 +45,33 @@
                 </div>
 				<button>Search</button>
 			</section>
+			<section class="places">
+				<h1>Places</h1>
+				<div>
+				{% for place in places %}
+					<article>
+						<h2>{{ place.name }}</h2>
+						<div class="price_by_night">${{ place.price_by_night }}</div>
+						<div class="information">
+							<div class="max_guest">
+								<span>2 Guests</span>
+								max_guest = Column(Integer, default=0, nullable=False)
+							</div>
+							<div class="number_rooms">
+								<span>{{ place.number_rooms }} Bedroom</span>
+							</div>
+							<div class="number_bathrooms">
+								<span>{{ place.number_bathrooms }} Bathroom</span>
+							</div>
+						</div>
+						<div class="user"><b>Owner:</b> John Lennon</div>
+						<div class="description">{{ place.description }}</div>
+					</article>
+				{% endfor %}
+				</div>
+			</section>
 		</div>
+		<div class="footer-cover-up"></div>
 		<footer>
 			<strong>Best School</strong>
 		</footer>
