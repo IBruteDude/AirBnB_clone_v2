@@ -6,6 +6,7 @@ from models import storage
 from models.amenity import Amenity
 from models.place import Place
 from models.state import State
+from models.user import User
 from sys import path
 
 
@@ -35,8 +36,15 @@ def render_complete_template():
     state_list = storage.all(State).values()
     amenity_list = storage.all(Amenity).values()
     place_list = storage.all(Place).values()
+    user_list = storage.all(User).values()
     for state in state_list:
         state.cities = sorted(state.cities, key=cmp_to_key(namesort))
+    for place in place_list:
+        assert type(place) is Place
+        for user in user_list:
+            assert type(user) is User
+            if user.id == place.user_id:
+                place.user = f'{user.first_name} {user.last_name}'
     return render_template("100-hbnb.html",
                            states=state_list,
                            amenities=amenity_list,
