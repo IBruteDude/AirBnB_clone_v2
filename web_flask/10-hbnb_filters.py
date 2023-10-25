@@ -12,12 +12,15 @@ from sys import path
 path.append(path[0] + '/..')
 app = Flask(__name__)
 
+
 def namesort(entity1, entity2):
+    """sort by name attribute"""
     if entity1.name > entity2.name:
         return 1
     elif entity1.name < entity2.name:
         return -1
     return 0
+
 
 @app.teardown_appcontext
 def app_teardown(self):

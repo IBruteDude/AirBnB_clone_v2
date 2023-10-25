@@ -18,10 +18,11 @@ def app_teardown(self):
     storage.close()
 
 
-@app.route("/states_list",strict_slashes=False)
+@app.route("/states_list", strict_slashes=False)
 def list_states():
     """Render the page displaying the list of states"""
     state_list = storage.all(State).values()
+
     def namesort(entity1, entity2):
         if entity1.name > entity2.name:
             return 1
